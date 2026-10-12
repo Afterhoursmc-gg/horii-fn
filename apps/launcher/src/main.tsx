@@ -4,10 +4,10 @@ import{invoke}from'@tauri-apps/api/core';
 import'./style.css';
 
 const DEFAULT_API='https://api.fn.horii.dev';
-const LAUNCHER_VERSION='0.1.2';
+const LAUNCHER_VERSION='0.1.3';
 
 type BackendStatus={api:string;database:string;redis:string;fortniteCompatibility:string;rebootIntegration:string;remoteHosts?:{total:number;ready:number;stale:number;allocatable:number}};
-type ClientDiag={found?:boolean;path?:string|null;version?:string|null;message?:string;allowed_to_launch?:boolean;error?:string};
+type ClientDiag={found?:boolean;path?:string|null;version?:string|null;build_id?:string|null;manifest_path?:string|null;compatibility?:string;supported_by_project_reboot?:boolean;message?:string;allowed_to_launch?:boolean;error?:string};
 type ApiResponse={status:number;body:string};
 
 function friendlyError(error:string){const map:Record<string,string>={invalid_credentials:'Wrong email or password.',no_ready_project_reboot_host:'No remote Project Reboot host is verified ready yet.',project_reboot_unavailable:'Remote Project Reboot host is unavailable.',invalid_region:'Invalid matchmaking region.'};return map[error]||error}
@@ -18,8 +18,8 @@ async function apiPost(path:string,api:string,body:any,token?:string){const r=aw
 
 function App(){
  const[api,setApi]=useState(localStorage.getItem('horii_fn_api')||DEFAULT_API);const[email,setEmail]=useState(localStorage.getItem('horii_fn_email')||'');const[password,setPassword]=useState('');const[token,setToken]=useState(localStorage.getItem('horii_fn_token')||'');const[user,setUser]=useState<any>(null);const[status,setStatus]=useState<BackendStatus|null>(null);const[diag,setDiag]=useState<ClientDiag|null>(null);const[session,setSession]=useState<any>(null);const[msg,setMsg]=useState('Ready.');const[busy,setBusy]=useState(false);
- const remoteReady=(status?.remoteHosts?.allocatable||0)>0;const clientDetected=diag?.found===true;const canPlay=!!token&&clientDetected&&remoteReady&&!busy;
- const lockReasons=useMemo(()=>{const r:string[]=[];if(!token)r.push('Log in with H0RII FN.');if(!clientDetected)r.push('Detect a compatible local Fortnite client.');if(!remoteReady)r.push('No verified remote Project Reboot host is ready on the VPS.');return r},[token,clientDetected,remoteReady]);
+ const remoteReady=(status?.remoteHosts?.allocatable||0)>0;const clientDetected=diag?.found===true;const clientSupported=diag?.supported_by_project_reboot===true;const canPlay=!!token&&clientDetected&&clientSupported&&remoteReady&&!busy;
+ const lockReasons=useMemo(()=>{const r:string[]=[];if(!token)r.push('Log in with H0RII FN.');if(!clientDetected)r.push('Detect a local Fortnite client.');if(clientDetected&&!clientSupported)r.push(`Unsupported or unverified Fortnite build: ${diag?.version||'unknown'} (${diag?.compatibility||'no compatibility data'}).`);if(!remoteReady)r.push(`No allocatable remote Project Reboot host. Hosts total=${status?.remoteHosts?.total??0}, ready=${status?.remoteHosts?.ready??0}, stale=${status?.remoteHosts?.stale??0}, allocatable=${status?.remoteHosts?.allocatable??0}.`);return r},[token,clientDetected,clientSupported,remoteReady,status,diag]);
  function saveApi(v:string){setApi(v);localStorage.setItem('horii_fn_api',base(v))}
  async function check(){setBusy(true);setMsg('Checking backend...');try{const j=await apiGet('/status',api);setStatus(j);setMsg(`Backend online. Remote hosts ready: ${j.remoteHosts?.allocatable??0}.`)}catch(e:any){setStatus(null);setMsg(`Backend check failed: ${e?.message||String(e)}`)}finally{setBusy(false)}}
  async function login(){setBusy(true);setMsg('Logging in...');setSession(null);try{const j=await apiPost('/auth/login',api,{email,password});setToken(j.accessToken);setUser(j.user);localStorage.setItem('horii_fn_token',j.accessToken);localStorage.setItem('horii_fn_email',email);setMsg(`Logged in as ${j.user.displayName}.`);const s=await apiGet('/status',api,j.accessToken);setStatus(s)}catch(e:any){setToken('');setUser(null);localStorage.removeItem('horii_fn_token');setMsg(e?.message||String(e))}finally{setBusy(false)}}
