@@ -4,7 +4,7 @@ import{invoke}from'@tauri-apps/api/core';
 import'./style.css';
 
 const DEFAULT_API='https://api.fn.horii.dev';
-const LAUNCHER_VERSION='0.1.3';
+const LAUNCHER_VERSION='0.1.4';
 
 type BackendStatus={api:string;database:string;redis:string;fortniteCompatibility:string;rebootIntegration:string;remoteHosts?:{total:number;ready:number;stale:number;allocatable:number}};
 type ClientDiag={found?:boolean;path?:string|null;version?:string|null;build_id?:string|null;manifest_path?:string|null;compatibility?:string;supported_by_project_reboot?:boolean;message?:string;allowed_to_launch?:boolean;error?:string};
