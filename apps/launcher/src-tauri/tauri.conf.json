@@ -1,6 +1,6 @@
 {
   "productName": "H0RII FN Launcher",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "identifier": "dev.horii.fn.launcher",
   "build": {
     "beforeDevCommand": "npm run dev",
