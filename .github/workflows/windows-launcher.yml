@@ -1,0 +1,40 @@
+name: Build H0RII FN Windows Launcher
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'apps/launcher/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/windows-launcher.yml'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install dependencies
+        run: npm ci
+      - name: Build launcher frontend
+        run: npm run build --workspace apps/launcher
+      - name: Build Tauri Windows artifacts
+        working-directory: apps/launcher
+        run: npm run tauri:build
+      - name: Collect artifacts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts | Out-Null
+          Get-ChildItem apps/launcher/src-tauri/target/release -Filter *.exe -File | Copy-Item -Destination artifacts
+          Get-ChildItem apps/launcher/src-tauri/target/release/bundle -Recurse -Include *.msi,*setup.exe | Copy-Item -Destination artifacts
+          Get-ChildItem artifacts | Format-Table Name,Length
+      - uses: actions/upload-artifact@v4
+        with:
+          name: horii-fn-windows-launcher
+          path: artifacts/*

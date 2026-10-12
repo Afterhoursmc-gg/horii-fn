@@ -1,0 +1,12 @@
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS host_token_hash TEXT;
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS ready_state TEXT NOT NULL DEFAULT 'not_ready';
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS capacity_total INT NOT NULL DEFAULT 1;
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS capacity_available INT NOT NULL DEFAULT 0;
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS active_players INT NOT NULL DEFAULT 0;
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS verified_compatible BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS compatibility_notes TEXT;
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS heartbeat_interval_seconds INT NOT NULL DEFAULT 20;
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS last_agent_version TEXT;
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS last_client_version TEXT;
+ALTER TABLE game_servers ADD COLUMN IF NOT EXISTS last_runtime JSONB NOT NULL DEFAULT '{}';
+CREATE INDEX IF NOT EXISTS idx_game_servers_ready ON game_servers(adapter,region,ready_state,status,last_heartbeat_at,capacity_available);

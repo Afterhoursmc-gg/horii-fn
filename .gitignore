@@ -1,0 +1,11 @@
+node_modules/
+**/node_modules/
+.env
+.env.*
+!.env.example
+secrets/
+dist/
+apps/*/dist/
+apps/launcher/src-tauri/target/
+*.log
+.DS_Store

@@ -1,0 +1,49 @@
+{
+  "name": "horii-fn",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "tsx apps/api/src/server.ts",
+    "build": "npm run build -ws --if-present",
+    "test": "tsx tests/e2e.ts",
+    "migrate": "tsx packages/database/migrate.ts",
+    "typecheck": "tsc -b"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "latest",
+    "@types/cors": "latest",
+    "@types/express": "latest",
+    "@types/jsonwebtoken": "latest",
+    "@types/node": "latest",
+    "@types/pg": "^8.23.1",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/ws": "latest",
+    "@vitejs/plugin-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vite": "latest"
+  },
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "latest",
+    "argon2": "latest",
+    "bcryptjs": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "express-rate-limit": "latest",
+    "helmet": "latest",
+    "ioredis": "latest",
+    "jsonwebtoken": "latest",
+    "pg": "latest",
+    "pino": "latest",
+    "swagger-ui-express": "latest",
+    "ws": "latest",
+    "zod": "latest"
+  }
+}
