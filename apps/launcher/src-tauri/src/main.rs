@@ -205,7 +205,7 @@ fn detect_fortnite_install() -> Detection {
 
 #[tauri::command]
 async fn api_get(url: String, token: Option<String>) -> Result<ApiResponse, String> {
-    let client = reqwest::Client::builder().user_agent("H0RII-FN-Launcher/0.2.0").build().map_err(|e| e.to_string())?;
+    let client = reqwest::Client::builder().user_agent("H0RII-FN-Launcher/0.2.1").build().map_err(|e| e.to_string())?;
     let mut req = client.get(url);
     if let Some(token) = token.filter(|v| !v.is_empty()) { req = req.bearer_auth(token); }
     let res = req.send().await.map_err(|e| e.to_string())?;
@@ -215,7 +215,7 @@ async fn api_get(url: String, token: Option<String>) -> Result<ApiResponse, Stri
 
 #[tauri::command]
 async fn api_post(input: ApiPostInput) -> Result<ApiResponse, String> {
-    let client = reqwest::Client::builder().user_agent("H0RII-FN-Launcher/0.2.0").build().map_err(|e| e.to_string())?;
+    let client = reqwest::Client::builder().user_agent("H0RII-FN-Launcher/0.2.1").build().map_err(|e| e.to_string())?;
     let mut req = client.post(input.url).json(&input.body);
     if let Some(token) = input.token.filter(|v| !v.is_empty()) { req = req.bearer_auth(token); }
     let res = req.send().await.map_err(|e| e.to_string())?;
