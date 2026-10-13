@@ -46,7 +46,7 @@ async function ogfnBackendHealth(){
     catch(e:any){results.push({path,ok:false,error:e?.message||String(e)})}
   }
   const backendReady=results.every(r=>r.ok);
-  return {ok:backendReady,base,kind:'better_reload_staging',httpEndpoints:results,matchmaker:{url:String(process.env.OGFN_MATCHMAKER_URL||'ws://127.0.0.1:6969'),testedSeparately:true},gameServer:{publicHost:'185.244.0.19',publicPort:7777},playableVerified:false,notice:'OGFN backend/lobby/matchmaker staging is reachable. This does not prove a Fortnite client can join; lawful client build and runtime test are still required.'};
+  return {ok:backendReady,base,kind:'better_reload_staging',httpEndpoints:results,matchmaker:{url:String(process.env.OGFN_MATCHMAKER_URL||'ws://127.0.0.1:6969'),testedSeparately:true},redirectLayer:{userManaged:true,notAutomated:['dll_injection','ssl_bypass','anti_cheat_bypass','drm_or_auth_bypass','manual_mapping'],backendUrlForVm:'http://10.0.2.2:43551',backendUrlIfRunningInsideWindows:'http://127.0.0.1:3551'},gameServer:{publicHost:'185.244.0.19',publicPort:7777},playableVerified:false,notice:'OGFN backend/lobby/matchmaker staging is reachable. Redirect/SSL-bypass layers are user-managed and not automated by H0RII. Gameplay still requires lawful client build and runtime test.'};
 }
 async function allocateHoriiRuntime(user:any,ticket:any,body:any){
   const base=String(process.env.HORII_RUNTIME_URL||'http://127.0.0.1:4318').replace(/\/$/,'');
